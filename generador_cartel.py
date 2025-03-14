@@ -41,9 +41,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
         if op1:
-            opcionales_texto += f"{op1}\n💰 {precio_op1}"
+            opcionales_texto += f"{op1}\n💰A {precio_op1}"
         if op2:
-            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
+            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -61,13 +61,14 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                 run.font.size = Pt(16)
                 run.font.color.rgb = RGBColor(44, 66, 148)
                 run.bold = True
-            opcional_paragraph = doc.add_paragraph(opcionales_texto)
-            opcional_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-            opcional_run = opcional_paragraph.add_run()
-            opcional_run.font.name = "Neulis Sans"
-            opcional_run.font.size = Pt(14)
-            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
-            opcional_run.bold = False
+            if opcionales_texto:
+                opcional_paragraph = doc.add_paragraph()
+                opcional_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                opcional_run = opcional_paragraph.add_run(opcionales_texto)
+                opcional_run.font.name = "Neulis Sans"
+                opcional_run.font.size = Pt(14)
+                opcional_run.font.color.rgb = RGBColor(44, 66, 148)
+                opcional_run.bold = False
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)

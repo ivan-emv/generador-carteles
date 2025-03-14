@@ -100,4 +100,4 @@ else:
     if st.button("Generar Cartel"):
         archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
         with open(archivo_generado, "rb") as file:
-            st.download_button(label="Descargar Cartel", data=file, file_name=archivo_generado, mime
+            st.download_button(label="Descargar Cartel", data=file, file_name=archivo_generado, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

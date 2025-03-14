@@ -12,7 +12,7 @@ def obtener_dia_semana(fecha, idiomas):
     }
     try:
         fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
-        dias_traducidos = [dias[idioma][fecha_dt.weekday()] for idioma in idiomas]
+        dias_traducidos = [dias.get(idioma, dias["Español"])[fecha_dt.weekday()] for idioma in idiomas]
         return f"{' / '.join(dias_traducidos)} - {fecha}"
     except ValueError:
         return "Día inválido"
@@ -24,12 +24,12 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno"},
+        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno"},
         "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã"},
         "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast"}
     }
     
-    textos_traducidos = [traducciones[idioma] for idioma in idiomas]
+    textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
     
     bienvenida = " / ".join([texto['Bienvenidos'] for texto in textos_traducidos])
     guia_traducido = " / ".join([texto['Guía'] for texto in textos_traducidos])
@@ -41,9 +41,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
         if op1:
-            opcionales_texto += f"{op1}\n💰 {precio_op1}"
+            opcionales_texto += f"{op1}\n💰A {precio_op1}"
         if op2:
-            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
+            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
     
     reemplazos = {
         "¡Bienvenidos / Welcome / Bem-Vindos": bienvenida,
@@ -62,7 +62,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                 for run in p.runs:
                     if key in ["¡Bienvenidos / Welcome / Bem-Vindos", "(CIUDAD)"]:
                         run.font.name = "Neulis Sans Black"
-                        run.font.size = Pt(18)
+                        run.font.size = Pt(16)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "📅":
                         run.font.name = "Neulis Sans Black"
@@ -100,4 +100,4 @@ else:
     if st.button("Generar Cartel"):
         archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
         with open(archivo_generado, "rb") as file:
-            st.download_button(label="Descargar Cartel", data=file, file_name=archivo_generado, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            st.download_button(label="Descargar Cartel", data=file, file_name=archivo_generado, mime

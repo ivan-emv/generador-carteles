@@ -1,6 +1,7 @@
 import streamlit as st
 from docx import Document
-from docx.shared import Pt, WD_PARAGRAPH_ALIGNMENT
+from docx.shared import Pt
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 
 def obtener_dia_semana(fecha, idiomas):

@@ -14,33 +14,41 @@ def obtener_dia_semana(fecha, idioma1, idioma2):
     except ValueError:
         return "Día inválido"
 
-def generar_cartel(ciudad, fecha, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idioma1, idioma2):
+def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idioma1, idioma2):
     doc_path = "EJEMPLO CARTEL EMV.docx"
     doc = Document(doc_path)
     
     fecha_formateada = obtener_dia_semana(fecha, idioma1, idioma2)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional"},
-        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion"}
+        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade"},
+        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity"}
     }
     
     texto1 = traducciones[idioma1]
     texto2 = traducciones[idioma2]
     
+    actividad_traducida = f"{texto1['Actividad']} / {texto2['Actividad']} - {actividad}"
+    
+    if not op1 and not op2:
+        opcional_traducida = f"{texto1['NoOpcionales']} / {texto2['NoOpcionales']}"
+        precio_op1 = ""
+        precio_op2 = ""
+    else:
+        opcional_traducida = f"{op1} - 💰A {precio_op1} 📌Reserva con su guía. / Reserve com seu guia. / Reserve with your guide"
+        if op2:
+            opcional_traducida += f"\n{op2} - 💰B {precio_op2} 📌Reserva con su guía. / Reserve com seu guía. / Reserve with your guide"
+    
     reemplazos = {
         "¡Bienvenidos / Welcome / Bem-Vindos": f"{texto1['Bienvenidos']} / {texto2['Bienvenidos']}",
         "(CIUDAD)": f"{ciudad}",
-        "📅": f"📅 {fecha_formateada}",
+        "📅": f"📅 {fecha_formateada}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
         "➡️": f"➡️ {desayuno}",
         "🧑‍💼": f"🧑‍💼 {texto1['Guía']} / {texto2['Guía']}: {nombre_guia}",
-        "OP1 =": f"{op1}",
-        "💰A 45€": f"💰A {precio_op1}",
-        "OP2=": f"{op2}" if op2 else "", 
-        "💰B 45€": f"💰B {precio_op2}" if precio_op2 else ""
+        "OP1 =": opcional_traducida
     }
     
     for p in doc.paragraphs:
@@ -62,16 +70,17 @@ if len(idiomas_seleccionados) < 2:
 else:
     ciudad = st.text_input("Ingrese la ciudad:")
     fecha = st.text_input("Ingrese la fecha (dd/mm/aaaa):")
+    actividad = st.text_input("Ingrese el nombre de la actividad principal:")
     hora_encuentro = st.text_input("Ingrese la hora de encuentro:")
     punto_encuentro = st.text_input("Ingrese el punto de encuentro:")
     desayuno = st.text_input("Ingrese la hora del desayuno:")
     nombre_guia = st.text_input("Ingrese el nombre del guía:")
-    op1 = st.text_input("Ingrese la Excursión Opcional 1:")
-    precio_op1 = st.text_input("Ingrese el precio de la Excursión Opcional 1:")
+    op1 = st.text_input("Ingrese la Excursión Opcional 1 (Opcional):")
+    precio_op1 = st.text_input("Ingrese el precio de la Excursión Opcional 1 (Opcional):")
     op2 = st.text_input("Ingrese la Excursión Opcional 2 (Opcional):")
     precio_op2 = st.text_input("Ingrese el precio de la Excursión Opcional 2 (Opcional):")
     
     if st.button("Generar Cartel"):
-        archivo_generado = generar_cartel(ciudad, fecha, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados[0], idiomas_seleccionados[1])
+        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados[0], idiomas_seleccionados[1])
         with open(archivo_generado, "rb") as file:
             st.download_button(label="Descargar Cartel", data=file, file_name=archivo_generado, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

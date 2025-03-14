@@ -52,7 +52,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-        "✨ Paseo opcional / Passeio opcional / Optional excursion": "✨ Paseo opcional / Passeio opcional / Optional excursion"
+        "✨ Paseo opcional / Passeio opcional / Optional excursion": "✨ Paseo opcional / Passeio opcional / Optional excursion\n" + opcionales_texto
     }
     
     for p in doc.paragraphs:

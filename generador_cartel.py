@@ -36,14 +36,14 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     
-    opcionales_texto = ""
     if not op1 and not op2:
         opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
+        opcionales_texto = ""
         if op1:
-            opcionales_texto += f"{op1}\n💰 {precio_op1}"
+            opcionales_texto += f"{op1}\n💰A {precio_op1}"
         if op2:
-            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
+            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -52,7 +52,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-        "✨ Paseo opcional / Passeio opcional / Optional excursion": opcionales_texto
+        "✨ Paseo opcional / Passeio opcional / Optional excursion": f"✨ Paseo opcional / Passeio opcional / Optional excursion\n{opcionales_texto if opcionales_texto else ''}"
     }
     
     for p in doc.paragraphs:
@@ -66,6 +66,11 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "📅":
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif key == "✨ Paseo opcional / Passeio opcional / Optional excursion":
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)

@@ -62,13 +62,14 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                 run.font.color.rgb = RGBColor(44, 66, 148)
                 run.bold = True
             if opcionales_texto:
-                opcional_paragraph = doc.paragraphs.insert(doc.paragraphs.index(p) + 1, doc.add_paragraph(opcionales_texto))
+                opcional_paragraph = doc.add_paragraph()
                 opcional_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                opcional_run = opcional_paragraph.add_run()
+                opcional_run = opcional_paragraph.add_run(opcionales_texto)
                 opcional_run.font.name = "Neulis Sans"
                 opcional_run.font.size = Pt(14)
                 opcional_run.font.color.rgb = RGBColor(44, 66, 148)
                 opcional_run.bold = False
+                doc._element.body.insert(doc._element.body.index(p._element) + 1, opcional_paragraph._element)
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)

@@ -51,7 +51,8 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-        "✨ Paseo opcional / Passeio opcional / Optional excursion": opcionales_texto
+        "✨ Paseo opcional / Passeio opcional / Optional excursion": opcionales_texto,
+        "(ACTIVIDAD)": ""
     }
     
     for p in doc.paragraphs:
@@ -59,8 +60,15 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
             if key in p.text:
                 p.text = p.text.replace(key, value)
                 for run in p.runs:
-                    run.font.name = "Neulis Sanz"
-                    run.font.size = Pt(12)
+                    if key in ["¡Bienvenidos / Welcome / Bem-Vindos", "(CIUDAD)"]:
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(16)
+                    elif key == "📅":
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(14)
+                    else:
+                        run.font.name = "Neulis Sans"
+                        run.font.size = Pt(14)
     
     output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"
     doc.save(output_path)

@@ -62,9 +62,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                 run.font.color.rgb = RGBColor(44, 66, 148)
                 run.bold = True
             if opcionales_texto:
-                opcional_paragraph = doc.add_paragraph()
+                opcional_paragraph = p.insert_paragraph_after(opcionales_texto)
                 opcional_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                opcional_run = opcional_paragraph.add_run(opcionales_texto)
+                opcional_run = opcional_paragraph.add_run()
                 opcional_run.font.name = "Neulis Sans"
                 opcional_run.font.size = Pt(14)
                 opcional_run.font.color.rgb = RGBColor(44, 66, 148)

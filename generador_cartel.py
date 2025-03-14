@@ -12,19 +12,14 @@ def obtener_dia_semana(fecha, idiomas):
     }
     try:
         fecha_dt = datetime.strptime(fecha, "%d/%m/%Y")
-        dias_traducidos = [dias.get(idioma, dias["Español"])[fecha_dt.weekday()] for idioma in idiomas]
-        return f"{' / '.join(dias_traducidos)} - {fecha}"
+        return f"{' / '.join([dias[idioma][fecha_dt.weekday()] for idioma in idiomas])} - {fecha}"
     except ValueError:
         return "Día inválido"
 
 def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
     try:
         st.write("Iniciando procesamiento del cartel...")
-        doc_path = "EJEMPLO CARTEL EMV.docx"
-        doc = Document(doc_path)
-        st.write("Documento cargado correctamente.")
-        
-        fecha_formateada = obtener_dia_semana(fecha, idiomas)
+        doc = Document("EJEMPLO CARTEL EMV.docx")
         
         traducciones = {
             "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Prevision": "Por favor, preséntense 10-15 min antes."},
@@ -32,33 +27,18 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
             "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Prevision": "Please, be at least 10-15 min. In Advance."}
         }
         
-        textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
-        
-        bienvenida = " / ".join([texto['Bienvenidos'] for texto in textos_traducidos])
-        guia_traducido = " / ".join([texto['Guía'] for texto in textos_traducidos])
-        actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
-        desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
-        prevision_traducida = " / ".join([texto['Prevision'] for texto in textos_traducidos])
-        
-        opcionales_texto = "✨ Paseo opcional / Passeio opcional / Optional excursion"
-        if not op1 and not op2:
-            opcionales_texto += f"\n{textos_traducidos[0]['NoOpcionales']}"
-        else:
-            if op1:
-                opcionales_texto += f"\n{op1}\n💰A {precio_op1}"
-            if op2:
-                opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
+        textos_traducidos = [traducciones[idioma] for idioma in idiomas]
         
         reemplazos = {
-            "(BIENVENIDA)": bienvenida,
-            "(CIUDAD)": f"{ciudad}",
-            "📅": f"📅 {fecha_formateada}\n➡️ {desayuno_traducido}\n{actividad_traducida}",
+            "(BIENVENIDA)": " / ".join([t['Bienvenidos'] for t in textos_traducidos]),
+            "(CIUDAD)": ciudad,
+            "📅": f"📅 {obtener_dia_semana(fecha, idiomas)}\n➡️ {' / '.join([t['Desayuno'] for t in textos_traducidos])}: {desayuno}\n{' / '.join([t['Actividad'] for t in textos_traducidos])} - {actividad}",
             "⏰": f"⏰ {hora_encuentro}",
             "📍": f"📍 {punto_encuentro}",
-            "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-            "(PREVISION1)": prevision_traducida,
-            "(PREVISION2)": prevision_traducida,
-            "✨ Paseo opcional / Passeio opcional / Optional excursion": opcionales_texto
+            "🧑‍💼": f"🧑‍💼 {' / '.join([t['Guía'] for t in textos_traducidos])}: {nombre_guia}",
+            "(PREVISION1)": " / ".join([t['Prevision'] for t in textos_traducidos]),
+            "(PREVISION2)": " / ".join([t['Prevision'] for t in textos_traducidos]),
+            "✨ Paseo opcional / Passeio opcional / Optional excursion": f"✨ Paseo opcional / Passeio opcional / Optional excursion\n{op1 if op1 else ''}{'\n💰A ' + precio_op1 if op1 else ''}{'\n' + op2 if op2 else ''}{'\n💰B ' + precio_op2 if op2 else ''}" if op1 or op2 else "✨ Paseo opcional / Passeio opcional / Optional excursion\n" + textos_traducidos[0]['NoOpcionales']
         }
         
         for p in doc.paragraphs:

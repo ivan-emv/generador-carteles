@@ -35,29 +35,23 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     
+    opcionales_texto = ""
     if not op1 and not op2:
-        opcional_traducida = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
-        op1 = ""
-        precio_op1 = ""
-        op2 = ""
-        precio_op2 = ""
+        opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
-        opcional_traducida = ""
         if op1:
-            opcional_traducida += f"OP1 = {op1}\n💰A {precio_op1} 📌Reserva con su guía. / Reserve com seu guia. / Reserve with your guide"
+            opcionales_texto += f"{op1}\n💰A {precio_op1}"
         if op2:
-            opcional_traducida += f"\nOP2 = {op2}\n💰B {precio_op2} 📌Reserva con su guía. / Reserve com seu guia. / Reserve with your guide"
+            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
     
     reemplazos = {
         "¡Bienvenidos / Welcome / Bem-Vindos": bienvenida,
         "(CIUDAD)": f"{ciudad}",
-        "📅": f"📅 {fecha_formateada}\n{actividad_traducida}",
+        "📅": f"📅 {fecha_formateada}\n➡️ {desayuno_traducido}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
-        "➡️": f"➡️ {desayuno_traducido}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-        "(ACTIVIDAD)": actividad_traducida,
-        "OP1 =": opcional_traducida if opcional_traducida else " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
+        "✨ Paseo opcional / Passeio opcional / Optional excursion": opcionales_texto
     }
     
     for p in doc.paragraphs:

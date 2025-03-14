@@ -41,9 +41,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
         if op1:
-            opcionales_texto += f"{op1}\n💰A {precio_op1}"
+            opcionales_texto += f"{op1}\n💰 {precio_op1}"
         if op2:
-            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
+            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,

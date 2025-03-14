@@ -22,9 +22,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade"},
-        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity"}
+        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã"},
+        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast"}
     }
     
     textos_traducidos = [traducciones[idioma] for idioma in idiomas]
@@ -32,6 +32,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     bienvenida = " / ".join([texto['Bienvenidos'] for texto in textos_traducidos])
     guia_traducido = " / ".join([texto['Guía'] for texto in textos_traducidos])
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
+    desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     
     if not op1 and not op2:
         opcional_traducida = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
@@ -52,8 +53,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "📅": f"📅 {fecha_formateada}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
-        "➡️": f"➡️ {desayuno}",
+        "➡️": f"➡️ {desayuno_traducido}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
+        "(ACTIVIDAD)": actividad_traducida,
         "OP1 =": opcional_traducida if opcional_traducida else " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     }
     
@@ -61,6 +63,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
+                run = p.add_run()
+                run.font.name = "Neulis Sanz"
+                run.font.size = Pt(12)
     
     output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"
     doc.save(output_path)

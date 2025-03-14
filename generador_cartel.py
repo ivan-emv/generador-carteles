@@ -41,9 +41,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     else:
         opcionales_texto = ""
         if op1:
-            opcionales_texto += f"{op1}\n💰A {precio_op1}"
+            opcionales_texto += f"{op1}\n💰 {precio_op1}"
         if op2:
-            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
+            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -52,7 +52,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-        "✨ Paseo opcional / Passeio opcional / Optional excursion": f"✨ Paseo opcional / Passeio opcional / Optional excursion\n{opcionales_texto if opcionales_texto else ''}"
+        "✨ Paseo opcional / Passeio opcional / Optional excursion": "✨ Paseo opcional / Passeio opcional / Optional excursion"
     }
     
     for p in doc.paragraphs:
@@ -74,11 +74,13 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
+                        run.bold = True
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     else:
                         run.font.name = "Neulis Sans"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
+                        run.bold = False
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
     
     output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"

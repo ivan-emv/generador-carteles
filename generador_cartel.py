@@ -1,6 +1,6 @@
 import streamlit as st
 from docx import Document
-from docx.shared import Pt
+from docx.shared import Pt, WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 
 def obtener_dia_semana(fecha, idiomas):
@@ -62,12 +62,15 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                     if key in ["¡Bienvenidos / Welcome / Bem-Vindos", "(CIUDAD)"]:
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(16)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "📅":
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(14)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     else:
                         run.font.name = "Neulis Sans"
                         run.font.size = Pt(14)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
     
     output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"
     doc.save(output_path)

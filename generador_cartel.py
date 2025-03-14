@@ -36,10 +36,10 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     
+    opcionales_texto = ""
     if not op1 and not op2:
         opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
-        opcionales_texto = ""
         if op1:
             opcionales_texto += f"{op1}\n💰 {precio_op1}"
         if op2:
@@ -51,11 +51,23 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "📅": f"📅 {fecha_formateada}\n➡️ {desayuno_traducido}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_encuentro}",
         "📍": f"📍 {punto_encuentro}",
-        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}",
-        "✨ Paseo opcional / Passeio opcional / Optional excursion": "✨ Paseo opcional / Passeio opcional / Optional excursion\n" + opcionales_texto
+        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
     }
     
     for p in doc.paragraphs:
+        if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
+            for run in p.runs:
+                run.font.name = "Neulis Sans Black"
+                run.font.size = Pt(16)
+                run.font.color.rgb = RGBColor(44, 66, 148)
+                run.bold = True
+            opcional_paragraph = doc.add_paragraph(opcionales_texto)
+            opcional_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+            opcional_run = opcional_paragraph.add_run()
+            opcional_run.font.name = "Neulis Sans"
+            opcional_run.font.size = Pt(14)
+            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
+            opcional_run.bold = False
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
@@ -70,17 +82,10 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key == "✨ Paseo opcional / Passeio opcional / Optional excursion":
-                        run.font.name = "Neulis Sans Black"
-                        run.font.size = Pt(16)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        run.bold = True
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key in opcionales_texto:
+                    else:
                         run.font.name = "Neulis Sans"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        run.bold = False
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
     
     output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"

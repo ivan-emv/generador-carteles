@@ -41,9 +41,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     else:
         if op1:
-            opcionales_texto += f"{op1}\n💰A {precio_op1}"
+            opcionales_texto += f"{op1}\n💰 {precio_op1}"
         if op2:
-            opcionales_texto += f"\n{op2}\n💰B {precio_op2}"
+            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -60,7 +60,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
             if key in p.text:
                 p.text = p.text.replace(key, value)
                 for run in p.runs:
-                    if key in ["¡Bienvenidos / Welcome / Bem-Vindos", "(CIUDAD)"]:
+                    if key in ["(BIENVENIDA)", "(CIUDAD)"]:
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(18)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER

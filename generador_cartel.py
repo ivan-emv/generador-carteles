@@ -1,5 +1,6 @@
 import streamlit as st
 from docx import Document
+from docx.shared import Pt
 from datetime import datetime
 
 def obtener_dia_semana(fecha, idiomas):
@@ -63,9 +64,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
-                run = p.add_run()
-                run.font.name = "Neulis Sanz"
-                run.font.size = Pt(12)
+                for run in p.runs:
+                    run.font.name = "Neulis Sanz"
+                    run.font.size = Pt(12)
     
     output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"
     doc.save(output_path)

@@ -3,6 +3,7 @@ from docx import Document
 from docx.shared import Pt, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
+import os
 
 def obtener_dia_semana(fecha, idiomas):
     dias = {
@@ -19,6 +20,9 @@ def obtener_dia_semana(fecha, idiomas):
 
 def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
     doc_path = "EJEMPLO CARTEL EMV.docx"
+    if not os.path.exists(doc_path):
+        return "Error: No se encuentra el archivo base. Asegúrate de que 'EJEMPLO CARTEL EMV.docx' está en el directorio."
+    
     doc = Document(doc_path)
     
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
@@ -60,7 +64,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key == "⏰":
+                    elif "⏰" in p.text:
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(20)
                         run.font.color.rgb = RGBColor(44, 66, 148)
@@ -71,14 +75,14 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
     
-    output_path = f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx"
+    output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
 
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
-idiomas_seleccionados = st.multiselect("Seleccione hasta 2 idiomas:", idiomas_disponibles, default=["Español"], max_selections=2)
+idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_disponibles, default=["Español"])
 
 if len(idiomas_seleccionados) == 0:
     st.warning("Debe seleccionar al menos un idioma para generar el cartel.")
@@ -97,5 +101,8 @@ else:
     
     if st.button("Generar Cartel"):
         archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
-        with open(archivo_generado, "rb") as file:
-            st.download_button(label="Descargar Cartel", data=file, file_name=archivo_generado, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        if archivo_generado.startswith("Error"):
+            st.error(archivo_generado)
+        else:
+            with open(archivo_generado, "rb") as file:
+                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

@@ -60,7 +60,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key == "⏰":
+                    elif "⏰" in key:
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(20)
                         run.font.color.rgb = RGBColor(44, 66, 148)
@@ -78,7 +78,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
-idiomas_seleccionados = st.multiselect("Seleccione hasta 2 idiomas:", idiomas_disponibles, default=["Español"], max_selections=2)
+idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_disponibles, default=["Español"])
 
 if len(idiomas_seleccionados) == 0:
     st.warning("Debe seleccionar al menos un idioma para generar el cartel.")

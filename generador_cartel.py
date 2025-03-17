@@ -51,33 +51,40 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     }
     
     for p in doc.paragraphs:
+        for key, value in reemplazos.items():
+            if key in p.text:
+                p.text = p.text.replace(key, value)
+                for run in p.runs:
+                    if key in ["(BIENVENIDA)", "(CIUDAD)"]:
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(18)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                    elif key == "📅":
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif "⏰" in p.text:
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(20)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    else:
+                        run.font.name = "Neulis Sans"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        
         if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
             index = doc.paragraphs.index(p) + 1
             if not op1 and not op2:
-                new_paragraph = doc.add_paragraph(no_opcionales_texto)
-                new_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                new_run = new_paragraph.add_run()
-                new_run.font.name = "Neulis Sans"
-                new_run.font.size = Pt(14)
-                new_run.font.color.rgb = RGBColor(44, 66, 148)
-                doc._element.body.insert(index, new_paragraph._element)
+                doc.paragraphs.insert(index, doc.add_paragraph(no_opcionales_texto))
             else:
                 if op1:
-                    new_paragraph = doc.add_paragraph(f"{op1} - 💰 {precio_op1}")
-                    new_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    new_run = new_paragraph.add_run()
-                    new_run.font.name = "Neulis Sans"
-                    new_run.font.size = Pt(14)
-                    new_run.font.color.rgb = RGBColor(44, 66, 148)
-                    doc._element.body.insert(index, new_paragraph._element)
+                    doc.paragraphs.insert(index, doc.add_paragraph(f"{op1} - 💰 {precio_op1}"))
                 if op2:
-                    new_paragraph = doc.add_paragraph(f"{op2} - 💰 {precio_op2}")
-                    new_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    new_run = new_paragraph.add_run()
-                    new_run.font.name = "Neulis Sans"
-                    new_run.font.size = Pt(14)
-                    new_run.font.color.rgb = RGBColor(44, 66, 148)
-                    doc._element.body.insert(index, new_paragraph._element)
+                    doc.paragraphs.insert(index + 1, doc.add_paragraph(f"{op2} - 💰 {precio_op2}"))
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)

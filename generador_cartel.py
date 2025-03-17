@@ -39,6 +39,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     guia_traducido = " / ".join([texto['Guía'] for texto in textos_traducidos])
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
+    no_opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -74,6 +75,15 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    
+    # Agregar mensaje cuando no hay opcionales
+    if not op1 and not op2:
+        opcionales_paragraph = doc.add_paragraph(no_opcionales_texto)
+        opcionales_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        opcionales_run = opcionales_paragraph.add_run()
+        opcionales_run.font.name = "Neulis Sans"
+        opcionales_run.font.size = Pt(14)
+        opcionales_run.font.color.rgb = RGBColor(44, 66, 148)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)

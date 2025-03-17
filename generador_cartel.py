@@ -56,12 +56,6 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                 run.font.size = Pt(20)
                 run.font.color.rgb = RGBColor(44, 66, 148)
             p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        elif "📍" in p.text:
-            for run in p.runs:
-                run.font.name = "Neulis Sans"
-                run.font.size = Pt(14)
-                run.font.color.rgb = RGBColor(44, 66, 148)
-            p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
@@ -73,6 +67,11 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "📅":
                         run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    else:
+                        run.font.name = "Neulis Sans"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT

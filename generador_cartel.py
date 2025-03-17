@@ -77,14 +77,13 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         
         if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
-            index = doc.paragraphs.index(p) + 1
             if not op1 and not op2:
-                doc.paragraphs.insert(index, doc.add_paragraph(no_opcionales_texto))
+                p.add_run(f"\n{no_opcionales_texto}").font.size = Pt(14)
             else:
                 if op1:
-                    doc.paragraphs.insert(index, doc.add_paragraph(f"{op1} - 💰 {precio_op1}"))
+                    p.add_run(f"\n{op1} - 💰 {precio_op1}").font.size = Pt(14)
                 if op2:
-                    doc.paragraphs.insert(index + 1, doc.add_paragraph(f"{op2} - 💰 {precio_op2}"))
+                    p.add_run(f"\n{op2} - 💰 {precio_op2}").font.size = Pt(14)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)

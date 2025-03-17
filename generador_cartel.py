@@ -24,9 +24,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã"},
-        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast"}
+        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída"},
+        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure"}
     }
     
     textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
@@ -35,15 +35,6 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     guia_traducido = " / ".join([texto['Guía'] for texto in textos_traducidos])
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
-    
-    opcionales_texto = ""
-    if not op1 and not op2:
-        opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
-    else:
-        if op1:
-            opcionales_texto += f"{op1}\n💰 {precio_op1}"
-        if op2:
-            opcionales_texto += f"\n{op2}\n💰 {precio_op2}"
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -55,21 +46,6 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     }
     
     for p in doc.paragraphs:
-        if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
-            for run in p.runs:
-                run.font.name = "Neulis Sans Black"
-                run.font.size = Pt(16)
-                run.font.color.rgb = RGBColor(44, 66, 148)
-                run.bold = True
-            if opcionales_texto:
-                opcional_paragraph = doc.add_paragraph()
-                opcional_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                opcional_run = opcional_paragraph.add_run(opcionales_texto)
-                opcional_run.font.name = "Neulis Sans"
-                opcional_run.font.size = Pt(14)
-                opcional_run.font.color.rgb = RGBColor(44, 66, 148)
-                opcional_run.bold = False
-                doc._element.body.insert(doc._element.body.index(p._element) + 1, opcional_paragraph._element)
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
@@ -82,6 +58,11 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                     elif key == "📅":
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif key == "⏰":
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(20)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     else:

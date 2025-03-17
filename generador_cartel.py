@@ -28,9 +28,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída"},
-        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure"}
+        "Español": {"Bienvenidos": "¡Bienvenidos", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída"},
+        "Inglés": {"Bienvenidos": "Welcome", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure"}
     }
     
     textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
@@ -75,22 +75,11 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        
-        if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
-            if not op1 and not op2:
-                opcional_run = p.add_run(f"\n{no_opcionales_texto}")
-            else:
-                if op1:
-                    opcional_run = p.add_run(f"\n{op1} - 💰 {precio_op1}")
-                if op2:
-                    opcional_run = p.add_run(f"\n{op2} - 💰 {precio_op2}")
-            opcional_run.font.name = "Neulis Sans"
-            opcional_run.font.size = Pt(14)
-            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
+
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]

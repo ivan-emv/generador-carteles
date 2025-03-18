@@ -48,9 +48,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "(CIUDAD)": f"{ciudad}",
         "📅": f"📅 {fecha_formateada}",
         "🥐": f"🥐 {desayuno_traducido}",
-        "🚌": f"🚌 {actividad_traducida}",
+        "🚌": f"🚌 {actividad_traducida}\n",
         "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}",
-        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}",
+        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}\n",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
     }
     

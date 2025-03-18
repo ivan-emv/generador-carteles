@@ -18,6 +18,11 @@ def obtener_dia_semana(fecha, idiomas):
     except ValueError:
         return "Día inválido"
 
+def convertir_a_pdf(docx_path):
+    pdf_path = docx_path.replace(".docx", ".pdf")
+    os.system(f"pandoc {docx_path} -o {pdf_path}")
+    return pdf_path
+
 def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
     doc_path = "EJEMPLO CARTEL EMV.docx"
     if not os.path.exists(doc_path):
@@ -54,43 +59,11 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
-                for run in p.runs:
-                    if key in ["(BIENVENIDA)", "(CIUDAD)"]:
-                        run.font.name = "Neulis Sans Black"
-                        run.font.size = Pt(18)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-                    elif key == "📅":
-                        run.font.name = "Neulis Sans Black"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif "⏰" in p.text:
-                        run.font.name = "Neulis Sans Black"
-                        run.font.size = Pt(20)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    else:
-                        run.font.name = "Neulis Sans"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        
-        if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
-            if not op1 and not op2:
-                opcional_run = p.add_run(f"\n{no_opcionales_texto}")
-            else:
-                if op1:
-                    opcional_run = p.add_run(f"\n{op1} - 💰 {precio_op1}")
-                if op2:
-                    opcional_run = p.add_run(f"\n{op2} - 💰 {precio_op2}")
-            opcional_run.font.name = "Neulis Sans"
-            opcional_run.font.size = Pt(14)
-            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
+
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
@@ -113,8 +86,10 @@ else:
     
     if st.button("Generar Cartel"):
         archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
-        if archivo_generado.startswith("Error"):
-            st.error(archivo_generado)
+        
+        if not archivo_generado.startswith("Error"):
+            archivo_pdf = convertir_a_pdf(archivo_generado)
+            with open(archivo_pdf, "rb") as file:
+                st.download_button(label="Descargar PDF", data=file, file_name=os.path.basename(archivo_pdf), mime="application/pdf")
         else:
-            with open(archivo_generado, "rb") as file:
-                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            st.error(archivo_generado)

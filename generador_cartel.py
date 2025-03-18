@@ -58,53 +58,26 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
-                for run in p.runs:
-                    if key in ["(BIENVENIDA)", "(CIUDAD)"]:
-                        run.font.name = "Arial Black"
-                        run.font.size = Pt(18)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-                    elif key == "📅":
-                        run.font.name = "Arial Black"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key == "🥐":
-                        run.font.name = "Arial Black"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key == "🚌":
-                        run.font.name = "Arial Black"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif "⏰" in p.text:
-                        run.font.name = "Arial Black"
-                        run.font.size = Pt(16)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    else:
-                        run.font.name = "Arial Black"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        
+    
         if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
             if not op1 and not op2:
                 opcional_run = p.add_run(f"\n{no_opcionales_texto}")
             else:
                 if op1:
-                    opcional_run = p.add_run(f"\n{op1} - 💰 {precio_op1}")
+                    opcional_run1 = p.add_run(f"\n{op1} - 💰 {precio_op1}")
+                    opcional_run1.font.name = "Arial"
+                    opcional_run1.font.size = Pt(14)
+                    opcional_run1.font.color.rgb = RGBColor(44, 66, 148)
                 if op2:
-                    opcional_run = p.add_run(f"\n{op2} - 💰 {precio_op2}")
-            opcional_run.font.name = "Arial"
-            opcional_run.font.size = Pt(14)
-            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
+                    opcional_run2 = p.add_run(f"\n{op2} - 💰 {precio_op2}")
+                    opcional_run2.font.name = "Arial"
+                    opcional_run2.font.size = Pt(14)
+                    opcional_run2.font.color.rgb = RGBColor(44, 66, 148)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
+
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]

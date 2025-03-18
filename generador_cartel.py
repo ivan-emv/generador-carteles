@@ -28,9 +28,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida", "PuntodeEncuentro": "Punto de Encuentro", "HoradeEncuentro": "Hora de Encuentro"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída", "PuntodeEncuentro": "Ponto de Encontro", "HoradeEncuentro": "Hora de Encontro"},
-        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure", "PuntodeEncuentro": "Meeting Point", "HoradeEncuentro": "Meeting Hour"}
+        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida", "PuntodeEncuentro": "Punto de Encuentro", "HoradeEncuentro": "Hora de Salida"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída", "PuntodeEncuentro": "Ponto de Encontro", "HoradeEncuentro": "Hora de Saída"},
+        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure", "PuntodeEncuentro": "Meeting Point", "HoradeEncuentro": "Departure Hour"}
     }
     
     textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
@@ -116,13 +116,13 @@ idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_dispon
 if len(idiomas_seleccionados) == 0:
     st.warning("Debe seleccionar al menos un idioma para generar el cartel.")
 else:
-    ciudad = st.text_input("Ingrese la ciudad:")
+    ciudad = st.text_input("Ingrese la Ciudad:")
     fecha = st.text_input("Ingrese la fecha (dd/mm/aaaa):")
     actividad = st.text_input("Ingrese el nombre de la actividad principal:")
-    hora_encuentro = st.text_input("Ingrese la hora de encuentro:")
-    punto_encuentro = st.text_input("Ingrese el punto de encuentro:")
-    desayuno = st.text_input("Ingrese la hora del desayuno:")
-    nombre_guia = st.text_input("Ingrese el nombre del guía:")
+    hora_encuentro = st.text_input("Ingrese la Hora de Salida:")
+    punto_encuentro = st.text_input("Ingrese el Punto de Encuentro:")
+    desayuno = st.text_input("Ingrese la Hora del Desayuno:")
+    nombre_guia = st.text_input("Ingrese el Nombre del Guía:")
     op1 = st.text_input("Ingrese la Excursión Opcional 1 (Opcional):")
     precio_op1 = st.text_input("Ingrese el precio de la Excursión Opcional 1 (Opcional):")
     op2 = st.text_input("Ingrese la Excursión Opcional 2 (Opcional):")

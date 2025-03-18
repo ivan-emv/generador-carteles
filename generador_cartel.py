@@ -84,6 +84,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
             else:
                 if op1:
                     opcional_run = p.add_run(f"\n{op1} - 💰 {precio_op1}")
+            opcional_run.font.name = "Neulis Sans"
+            opcional_run.font.size = Pt(14)
+            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
                 if op2:
                     opcional_run = p.add_run(f"\n{op2} - 💰 {precio_op2}")
             opcional_run.font.name = "Neulis Sans"

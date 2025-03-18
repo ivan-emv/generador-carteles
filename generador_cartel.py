@@ -40,7 +40,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     no_opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
-    punto_de_encuentro = " / ".join([texto['Punto de Encuentro'] for texto in textos_traducidos])
+    punto_de_encuentro = " / ".join([texto['PuntodeEncuentro'] for texto in textos_traducidos])
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
@@ -113,7 +113,7 @@ else:
     precio_op2 = st.text_input("Ingrese el precio de la Excursión Opcional 2 (Opcional):")
     
     if st.button("Generar Cartel"):
-        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
+        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, punto_de_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
         if archivo_generado.startswith("Error"):
             st.error(archivo_generado)
         else:

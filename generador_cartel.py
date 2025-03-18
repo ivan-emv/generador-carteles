@@ -4,8 +4,6 @@ from docx.shared import Pt, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 import os
-import smtplib
-from email.message import EmailMessage
 
 def obtener_dia_semana(fecha, idiomas):
     dias = {
@@ -19,23 +17,6 @@ def obtener_dia_semana(fecha, idiomas):
         return f"{' / '.join(dias_traducidos)} - {fecha}"
     except ValueError:
         return "Día inválido"
-
-def enviar_email(destinatario, archivo_adj):
-    remitente = "tuemail@gmail.com"
-    clave = "tucontraseña"
-    
-    msg = EmailMessage()
-    msg['Subject'] = "Cartel Generado"
-    msg['From'] = remitente
-    msg['To'] = destinatario
-    msg.set_content("Adjunto encontrarás el cartel generado.")
-    
-    with open(archivo_adj, "rb") as f:
-        msg.add_attachment(f.read(), maintype="application", subtype="vnd.openxmlformats-officedocument.wordprocessingml.document", filename=os.path.basename(archivo_adj))
-    
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(remitente, clave)
-        server.send_message(msg)
 
 def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
     doc_path = "EJEMPLO CARTEL EMV.docx"
@@ -62,13 +43,76 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     punto_de_encuentro = " / ".join([texto['PuntodeEncuentro'] for texto in textos_traducidos])
     hora_de_encuentro = " / ".join([texto['HoradeEncuentro'] for texto in textos_traducidos])
     
+    reemplazos = {
+        "(BIENVENIDA)": bienvenida,
+        "(CIUDAD)": f"{ciudad}",
+        "📅": f"📅 {fecha_formateada}",
+        "🥐": f"🥐 {desayuno_traducido}\n",
+        "🚌": f"🚌 {actividad_traducida}\n",
+        "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}",
+        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}\n",
+        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
+    }
+    
+    for p in doc.paragraphs:
+        for key, value in reemplazos.items():
+            if key in p.text:
+                p.text = p.text.replace(key, value)
+                for run in p.runs:
+                    if key in ["(BIENVENIDA)", "(CIUDAD)"]:
+                        run.font.name = "Arial Black"
+                        run.font.size = Pt(18)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                    elif key == "📅":
+                        run.font.name = "Arial Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif key == "🥐":
+                        run.font.name = "Arial Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif key == "🚌":
+                        run.font.name = "Arial Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif "⏰" in p.text:
+                        run.font.name = "Arial Black"
+                        run.font.size = Pt(16)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    else:
+                        run.font.name = "Arial Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        
+        if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
+            if not op1 and not op2:
+                opcional_run = p.add_run(f"\n{no_opcionales_texto}")
+            else:
+                if op1:
+                    opcional_run1 = p.add_run(f"\n{op1} - 💰 {precio_op1}")
+                    opcional_run1.font.name = "Arial"
+                    opcional_run1.font.size = Pt(14)
+                    opcional_run1.font.color.rgb = RGBColor(44, 66, 148)
+                if op2:
+                    opcional_run2 = p.add_run(f"\n{op2} - 💰 {precio_op2}")
+                    opcional_run2.font.name = "Arial"
+                    opcional_run2.font.size = Pt(14)
+                    opcional_run2.font.color.rgb = RGBColor(44, 66, 148)
+    
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
-
 st.title("Generador de Carteles para Pasajeros")
+
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
 idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_disponibles, default=["Español"])
+
 if len(idiomas_seleccionados) == 0:
     st.warning("Debe seleccionar al menos un idioma para generar el cartel.")
 else:
@@ -89,9 +133,5 @@ else:
         if archivo_generado.startswith("Error"):
             st.error(archivo_generado)
         else:
-            st.download_button(label="Descargar Cartel", data=open(archivo_generado, "rb"), file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-            if st.button("Enviar por Email"):
-                email_destino = st.text_input("Ingrese el correo del destinatario:")
-                if st.button("Enviar"):
-                    enviar_email(email_destino, archivo_generado)
-                    st.success("Correo enviado exitosamente.")
+            with open(archivo_generado, "rb") as file:
+                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

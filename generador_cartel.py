@@ -20,8 +20,17 @@ def generar_cartel_pdf(ciudad, fecha, actividad, hora_encuentro, punto_encuentro
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-    pdf.set_font("Arial", style='B', size=16)
     pdf.set_text_color(44, 66, 148)
+    
+    # Agregar logo si existe
+    logo_path = "logo.png"  # Ruta del logo, actualizar según sea necesario
+    if os.path.exists(logo_path):
+        pdf.image(logo_path, x=10, y=8, w=50)
+    pdf.ln(20)
+    
+    pdf.set_font("Arial", style='B', size=18)
+    pdf.cell(0, 10, "Generador de Carteles", ln=True, align='C')
+    pdf.ln(10)
     
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
@@ -42,37 +51,37 @@ def generar_cartel_pdf(ciudad, fecha, actividad, hora_encuentro, punto_encuentro
     def safe_text(text):
         return text.encode("latin-1", "ignore").decode("latin-1")
     
-    pdf.cell(200, 10, safe_text(bienvenida), ln=True, align='C')
+    pdf.set_font("Arial", style='B', size=16)
+    pdf.cell(0, 10, safe_text(bienvenida), ln=True, align='C')
     pdf.ln(5)
     pdf.set_font("Arial", style='B', size=14)
-    pdf.cell(200, 10, safe_text(ciudad), ln=True, align='C')
+    pdf.cell(0, 10, safe_text(ciudad), ln=True, align='C')
     pdf.ln(10)
     
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, safe_text(f"📅 {fecha_formateada}"), ln=True)
-    pdf.cell(200, 10, safe_text(f"➡️ {desayuno_traducido}"), ln=True)
-    pdf.cell(200, 10, safe_text(actividad_traducida), ln=True)
-    pdf.cell(200, 10, safe_text(f"⏰ {hora_encuentro}"), ln=True)
-    pdf.cell(200, 10, safe_text(f"📍 {punto_encuentro}"), ln=True)
-    pdf.cell(200, 10, safe_text(f"🧑‍💼 {guia_traducido}: {nombre_guia}"), ln=True)
+    pdf.cell(0, 10, safe_text(f"📅 {fecha_formateada}"), ln=True)
+    pdf.cell(0, 10, safe_text(f"➡️ {desayuno_traducido}"), ln=True)
+    pdf.cell(0, 10, safe_text(actividad_traducida), ln=True)
+    pdf.cell(0, 10, safe_text(f"⏰ {hora_encuentro}"), ln=True)
+    pdf.cell(0, 10, safe_text(f"📍 {punto_encuentro}"), ln=True)
+    pdf.cell(0, 10, safe_text(f"🧑‍💼 {guia_traducido}: {nombre_guia}"), ln=True)
     pdf.ln(10)
     
     pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, safe_text("✨ Paseo opcional / Passeio opcional / Optional excursion"), ln=True)
+    pdf.cell(0, 10, safe_text("✨ Paseo opcional / Passeio opcional / Optional excursion"), ln=True)
     pdf.set_font("Arial", size=12)
     
     if not op1 and not op2:
-        pdf.cell(200, 10, safe_text(no_opcionales_texto), ln=True)
+        pdf.cell(0, 10, safe_text(no_opcionales_texto), ln=True)
     else:
         if op1:
-            pdf.cell(200, 10, safe_text(f"{op1} - 💰 {precio_op1}"), ln=True)
+            pdf.cell(0, 10, safe_text(f"{op1} - 💰 {precio_op1}"), ln=True)
         if op2:
-            pdf.cell(200, 10, safe_text(f"{op2} - 💰 {precio_op2}"), ln=True)
+            pdf.cell(0, 10, safe_text(f"{op2} - 💰 {precio_op2}"), ln=True)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.pdf")
     pdf.output(output_path)
     return output_path
-
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
@@ -94,9 +103,9 @@ else:
     precio_op2 = st.text_input("Ingrese el precio de la Excursión Opcional 2 (Opcional):")
     
     if st.button("Generar Cartel"):
-        archivo_generado = generar_cartel_pdf(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
+        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
         if archivo_generado.startswith("Error"):
             st.error(archivo_generado)
         else:
             with open(archivo_generado, "rb") as file:
-                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/pdf")
+                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

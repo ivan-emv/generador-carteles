@@ -82,6 +82,7 @@ def generar_cartel_pdf(ciudad, fecha, actividad, hora_encuentro, punto_encuentro
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.pdf")
     pdf.output(output_path)
     return output_path
+
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
@@ -108,4 +109,4 @@ else:
             st.error(archivo_generado)
         else:
             with open(archivo_generado, "rb") as file:
-                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/pdf")

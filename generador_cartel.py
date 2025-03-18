@@ -46,8 +46,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
         "(CIUDAD)": f"{ciudad}",
-        "📅": f"📅 {fecha_formateada}",
-        "➡️": f"🥐 {desayuno_traducido}\n{actividad_traducida}",
+        "📅": f"📅 {fecha_formateada}\n🥐 {desayuno_traducido}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_de_encuentro}:\n{hora_encuentro}",
         "📍": f"📍 {punto_de_encuentro}:\n{punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
@@ -64,11 +63,6 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "📅":
-                        run.font.name = "Neulis Sans"
-                        run.font.size = Pt(14)
-                        run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-                    elif key == "➡️":
                         run.font.name = "Neulis Sans Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)

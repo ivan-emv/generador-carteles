@@ -18,7 +18,7 @@ def obtener_dia_semana(fecha, idiomas):
     except ValueError:
         return "Día inválido"
 
-def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_de_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
+def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
     doc_path = "EJEMPLO CARTEL EMV.docx"
     if not os.path.exists(doc_path):
         return "Error: No se encuentra el archivo base. Asegúrate de que 'EJEMPLO CARTEL EMV.docx' está en el directorio."
@@ -28,9 +28,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_de_encuentro,
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida", "PuntodeEncuentro": "Punto de Encuentro"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída", "PuntodeEncuentro": "Ponto de Encontro"},
-        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure", "PuntodeEncuentro": "Meeting Point"}
+        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída"},
+        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure"}
     }
     
     textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
@@ -40,14 +40,13 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_de_encuentro,
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     no_opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
-    punto_de_encuentro = " / ".join([texto['PuntodeEncuentro'] for texto in textos_traducidos])
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
         "(CIUDAD)": f"{ciudad}",
         "📅": f"📅 {fecha_formateada}\n➡️ {desayuno_traducido}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_encuentro}",
-        "📍": f"📍 Punto de Encuentro: \n {punto_encuentro}",
+        "📍": f"📍 {punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
     }
     

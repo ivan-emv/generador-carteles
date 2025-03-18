@@ -18,12 +18,7 @@ def obtener_dia_semana(fecha, idiomas):
     except ValueError:
         return "Día inválido"
 
-def convertir_a_pdf(docx_path):
-    pdf_path = docx_path.replace(".docx", ".pdf")
-    os.system(f"pandoc {docx_path} -o {pdf_path}")
-    return pdf_path
-
-def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
+def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_de_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):
     doc_path = "EJEMPLO CARTEL EMV.docx"
     if not os.path.exists(doc_path):
         return "Error: No se encuentra el archivo base. Asegúrate de que 'EJEMPLO CARTEL EMV.docx' está en el directorio."
@@ -33,9 +28,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
     
     traducciones = {
-        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida"},
-        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída"},
-        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure"}
+        "Español": {"Bienvenidos": "¡Bienvenidos!", "Guía": "GUÍA", "Opcional": "Paseo opcional", "NoOpcionales": "No hay Excursiones Opcionales para el Día de Hoy", "Actividad": "Actividad", "Desayuno": "Desayuno", "Salida": "Salida", "PuntodeEncuentro": "Punto de Encuentro"},
+        "Portugués": {"Bienvenidos": "Bem-Vindos!", "Guía": "GUIA", "Opcional": "Passeio opcional", "NoOpcionales": "Não há passeios opcionais para hoje", "Actividad": "Atividade", "Desayuno": "Café da Manhã", "Salida": "Saída", "PontodeEncontro": "Ponto de Encontro"},
+        "Inglés": {"Bienvenidos": "Welcome!", "Guía": "GUIDE", "Opcional": "Optional excursion", "NoOpcionales": "There are no optional excursions for today", "Actividad": "Activity", "Desayuno": "Breakfast", "Salida": "Departure", "MeetingPoint": "Meeting Point"}
     }
     
     textos_traducidos = [traducciones.get(idioma, traducciones["Español"]) for idioma in idiomas]
@@ -45,13 +40,14 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     actividad_traducida = " / ".join([texto['Actividad'] for texto in textos_traducidos]) + f" - {actividad}"
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     no_opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
+    punto_de_encuentro = " / ".join([texto['PuntodeEncuentro'] for texto in textos_traducidos])
     
     reemplazos = {
         "(BIENVENIDA)": bienvenida,
         "(CIUDAD)": f"{ciudad}",
         "📅": f"📅 {fecha_formateada}\n➡️ {desayuno_traducido}\n{actividad_traducida}",
         "⏰": f"⏰ {hora_encuentro}",
-        "📍": f"📍 {punto_encuentro}",
+        "📍": f"📍 {punto_de_encuentro}\n {punto_encuentro}",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
     }
     
@@ -59,11 +55,43 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         for key, value in reemplazos.items():
             if key in p.text:
                 p.text = p.text.replace(key, value)
+                for run in p.runs:
+                    if key in ["(BIENVENIDA)", "(CIUDAD)"]:
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(18)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                    elif key == "📅":
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    elif "⏰" in p.text:
+                        run.font.name = "Neulis Sans Black"
+                        run.font.size = Pt(20)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                    else:
+                        run.font.name = "Neulis Sans"
+                        run.font.size = Pt(14)
+                        run.font.color.rgb = RGBColor(44, 66, 148)
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        
+        if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
+            if not op1 and not op2:
+                opcional_run = p.add_run(f"\n{no_opcionales_texto}")
+            else:
+                if op1:
+                    opcional_run = p.add_run(f"\n{op1} - 💰 {precio_op1}")
+                if op2:
+                    opcional_run = p.add_run(f"\n{op2} - 💰 {precio_op2}")
+            opcional_run.font.name = "Neulis Sans"
+            opcional_run.font.size = Pt(14)
+            opcional_run.font.color.rgb = RGBColor(44, 66, 148)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
-
 st.title("Generador de Carteles para Pasajeros")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
@@ -85,11 +113,9 @@ else:
     precio_op2 = st.text_input("Ingrese el precio de la Excursión Opcional 2 (Opcional):")
     
     if st.button("Generar Cartel"):
-        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
-        
-        if not archivo_generado.startswith("Error"):
-            archivo_pdf = convertir_a_pdf(archivo_generado)
-            with open(archivo_pdf, "rb") as file:
-                st.download_button(label="Descargar PDF", data=file, file_name=os.path.basename(archivo_pdf), mime="application/pdf")
-        else:
+        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_de_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
+        if archivo_generado.startswith("Error"):
             st.error(archivo_generado)
+        else:
+            with open(archivo_generado, "rb") as file:
+                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

@@ -60,32 +60,32 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                 p.text = p.text.replace(key, value)
                 for run in p.runs:
                     if key in ["(BIENVENIDA)", "(CIUDAD)"]:
-                        run.font.name = "Neulis Sans Black"
+                        run.font.name = "Arial Black"
                         run.font.size = Pt(18)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "📅":
-                        run.font.name = "Neulis Sans Black"
+                        run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     elif key == "🥐":
-                        run.font.name = "Neulis Sans"
+                        run.font.name = "Arial"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     elif key == "🚌":
-                        run.font.name = "Neulis Sans Black"
+                        run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     elif "⏰" in p.text:
-                        run.font.name = "Neulis Sans Black"
+                        run.font.name = "Arial Black"
                         run.font.size = Pt(16)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     else:
-                        run.font.name = "Neulis Sans"
+                        run.font.name = "Arial"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
                         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
@@ -98,7 +98,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                     opcional_run = p.add_run(f"\n{op1} - 💰 {precio_op1}")
                 if op2:
                     opcional_run = p.add_run(f"\n{op2} - 💰 {precio_op2}")
-            opcional_run.font.name = "Neulis Sans"
+            opcional_run.font.name = "Arial"
             opcional_run.font.size = Pt(14)
             opcional_run.font.color.rgb = RGBColor(44, 66, 148)
     

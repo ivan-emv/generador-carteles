@@ -18,9 +18,15 @@ def obtener_dia_semana(fecha, idiomas):
     except ValueError:
         return "Día inválido"
 
+import subprocess
+
 def convertir_a_pdf(docx_path):
     pdf_path = docx_path.replace(".docx", ".pdf")
-    os.system(f"pandoc {docx_path} -o {pdf_path}")
+    result = subprocess.run(["pandoc", docx_path, "-o", pdf_path], capture_output=True, text=True)
+
+    if result.returncode != 0:
+        print("Error en la conversión:", result.stderr)
+        return "Error: No se pudo generar el PDF"
     return pdf_path
 
 def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas):

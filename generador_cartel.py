@@ -1,10 +1,7 @@
 import streamlit as st
-from docx import Document
-from docx.shared import Pt, RGBColor
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from fpdf import FPDF
 from datetime import datetime
 import os
-from fpdf import FPDF
 
 def obtener_dia_semana(fecha, idiomas):
     dias = {
@@ -42,32 +39,35 @@ def generar_cartel_pdf(ciudad, fecha, actividad, hora_encuentro, punto_encuentro
     desayuno_traducido = " / ".join([texto['Desayuno'] for texto in textos_traducidos]) + f": {desayuno}"
     no_opcionales_texto = " / ".join([texto['NoOpcionales'] for texto in textos_traducidos])
     
-    pdf.cell(200, 10, bienvenida, ln=True, align='C')
+    def safe_text(text):
+        return text.encode("latin-1", "ignore").decode("latin-1")
+    
+    pdf.cell(200, 10, safe_text(bienvenida), ln=True, align='C')
     pdf.ln(5)
     pdf.set_font("Arial", style='B', size=14)
-    pdf.cell(200, 10, ciudad, ln=True, align='C')
+    pdf.cell(200, 10, safe_text(ciudad), ln=True, align='C')
     pdf.ln(10)
     
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, f"📅 {fecha_formateada}", ln=True)
-    pdf.cell(200, 10, f"➡️ {desayuno_traducido}", ln=True)
-    pdf.cell(200, 10, actividad_traducida, ln=True)
-    pdf.cell(200, 10, f"⏰ {hora_encuentro}", ln=True)
-    pdf.cell(200, 10, f"📍 {punto_encuentro}", ln=True)
-    pdf.cell(200, 10, f"🧑‍💼 {guia_traducido}: {nombre_guia}", ln=True)
+    pdf.cell(200, 10, safe_text(f"📅 {fecha_formateada}"), ln=True)
+    pdf.cell(200, 10, safe_text(f"➡️ {desayuno_traducido}"), ln=True)
+    pdf.cell(200, 10, safe_text(actividad_traducida), ln=True)
+    pdf.cell(200, 10, safe_text(f"⏰ {hora_encuentro}"), ln=True)
+    pdf.cell(200, 10, safe_text(f"📍 {punto_encuentro}"), ln=True)
+    pdf.cell(200, 10, safe_text(f"🧑‍💼 {guia_traducido}: {nombre_guia}"), ln=True)
     pdf.ln(10)
     
     pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, "✨ Paseo opcional / Passeio opcional / Optional excursion", ln=True)
+    pdf.cell(200, 10, safe_text("✨ Paseo opcional / Passeio opcional / Optional excursion"), ln=True)
     pdf.set_font("Arial", size=12)
     
     if not op1 and not op2:
-        pdf.cell(200, 10, no_opcionales_texto, ln=True)
+        pdf.cell(200, 10, safe_text(no_opcionales_texto), ln=True)
     else:
         if op1:
-            pdf.cell(200, 10, f"{op1} - 💰 {precio_op1}", ln=True)
+            pdf.cell(200, 10, safe_text(f"{op1} - 💰 {precio_op1}"), ln=True)
         if op2:
-            pdf.cell(200, 10, f"{op2} - 💰 {precio_op2}", ln=True)
+            pdf.cell(200, 10, safe_text(f"{op2} - 💰 {precio_op2}"), ln=True)
     
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.pdf")
     pdf.output(output_path)

@@ -129,9 +129,25 @@ else:
     precio_op2 = st.text_input("Ingrese el precio de la Excursión Opcional 2 (Opcional):")
     
     if st.button("Generar Cartel"):
-        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
-        if archivo_generado.startswith("Error"):
-            st.error(archivo_generado)
-        else:
-            with open(archivo_generado, "rb") as file:
-                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        try:
+            # Validación del formato de fecha
+            datetime.strptime(fecha, "%d/%m/%Y")
+            
+            archivo_generado = generar_cartel(
+                ciudad, fecha, actividad, hora_encuentro,
+                punto_encuentro, desayuno, nombre_guia,
+                op1, precio_op1, op2, precio_op2, idiomas_seleccionados
+            )
+            
+            if archivo_generado.startswith("Error"):
+                st.error(archivo_generado)
+            else:
+                with open(archivo_generado, "rb") as file:
+                    st.download_button(
+                        label="Descargar Cartel",
+                        data=file,
+                        file_name=os.path.basename(archivo_generado),
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    )
+        except ValueError:
+            st.error("El formato de la fecha es inválido. Asegúrese de usar el formato dd/mm/aaaa (por ejemplo: 21/03/2025).")

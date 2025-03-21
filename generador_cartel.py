@@ -51,7 +51,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "🚌": f"🚌 {actividad_traducida}\n",
         "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}\n",
         "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}\n",
-        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}\n"
+        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}"
     }
     
     for p in doc.paragraphs:

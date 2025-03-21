@@ -68,27 +68,27 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                        p.alignment = WWD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "🥐":
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "🚌":
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif "⏰" in p.text:
                         run.font.name = "Arial Black"
                         run.font.size = Pt(16)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     else:
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         
         if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
             if not op1 and not op2:

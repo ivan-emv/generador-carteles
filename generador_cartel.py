@@ -49,9 +49,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "📅": f"📅 {fecha_formateada}",
         "🥐": f"🥐 {desayuno_traducido}\n",
         "🚌": f"🚌 {actividad_traducida}\n",
-        "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}",
-        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}\n",
-        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
+        "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}\n",
+        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}\n",
+        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}\n"
     }
     
     for p in doc.paragraphs:
@@ -68,7 +68,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WWD_PARAGRAPH_ALIGNMENT.CENTER
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
                     elif key == "🥐":
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)

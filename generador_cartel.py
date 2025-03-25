@@ -5,19 +5,6 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 import os
 
-# ✅ Configuración de la página
-st.set_page_config(page_title="Generador de Carteles - Guías", layout="wide")
-
-# 🔧 Ocultar la barra superior y el menú de Streamlit
-hide_streamlit_style = """
-    <style>
-        #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
-    </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
 def obtener_dia_semana(fecha, idiomas):
     dias = {
         "Español": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
@@ -62,9 +49,9 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
         "📅": f"📅 {fecha_formateada}",
         "🥐": f"🥐 {desayuno_traducido}\n",
         "🚌": f"🚌 {actividad_traducida}\n",
-        "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}\n",
-        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}\n",
-        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}"
+        "⏰": f"⏰ {hora_de_encuentro}: {hora_encuentro}",
+        "📍": f"📍 {punto_de_encuentro}: {punto_encuentro}\n",
+        "🧑‍💼": f"🧑‍💼 {guia_traducido}: {nombre_guia}"
     }
     
     for p in doc.paragraphs:
@@ -81,27 +68,27 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     elif key == "🥐":
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     elif key == "🚌":
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     elif "⏰" in p.text:
                         run.font.name = "Arial Black"
                         run.font.size = Pt(16)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     else:
                         run.font.name = "Arial Black"
                         run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(44, 66, 148)
-                        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         
         if "✨ Paseo opcional / Passeio opcional / Optional excursion" in p.text:
             if not op1 and not op2:
@@ -121,6 +108,7 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
+st.title("Generador de Carteles - Guías")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
 idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_disponibles, default=["Español"])
@@ -141,25 +129,9 @@ else:
     precio_op2 = st.text_input("Ingrese el precio de la Excursión Opcional 2 (Opcional):")
     
     if st.button("Generar Cartel"):
-        try:
-            # Validación del formato de fecha
-            datetime.strptime(fecha, "%d/%m/%Y")
-            
-            archivo_generado = generar_cartel(
-                ciudad, fecha, actividad, hora_encuentro,
-                punto_encuentro, desayuno, nombre_guia,
-                op1, precio_op1, op2, precio_op2, idiomas_seleccionados
-            )
-            
-            if archivo_generado.startswith("Error"):
-                st.error(archivo_generado)
-            else:
-                with open(archivo_generado, "rb") as file:
-                    st.download_button(
-                        label="Descargar Cartel",
-                        data=file,
-                        file_name=os.path.basename(archivo_generado),
-                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    )
-        except ValueError:
-            st.error("El formato de la fecha es inválido. Asegúrese de usar el formato dd/mm/aaaa (por ejemplo: 21/03/2025).")
+        archivo_generado = generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, desayuno, nombre_guia, op1, precio_op1, op2, precio_op2, idiomas_seleccionados)
+        if archivo_generado.startswith("Error"):
+            st.error(archivo_generado)
+        else:
+            with open(archivo_generado, "rb") as file:
+                st.download_button(label="Descargar Cartel", data=file, file_name=os.path.basename(archivo_generado), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")

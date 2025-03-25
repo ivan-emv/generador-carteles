@@ -110,6 +110,19 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     return output_path
 st.title("Generador de Carteles - Guías")
 
+# ✅ Configuración de la página
+st.set_page_config(page_title="Centro de Atención al Cliente", layout="wide")
+
+# 🔧 Ocultar la barra superior y el menú de Streamlit
+hide_streamlit_style = """
+    <style>
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
 idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_disponibles, default=["Español"])
 

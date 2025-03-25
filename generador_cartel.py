@@ -5,6 +5,9 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 import os
 
+# ✅ Configuración de la página
+st.set_page_config(page_title="Generador de Carteles - Guías", layout="wide")
+
 # 🔧 Ocultar la barra superior y el menú de Streamlit
 hide_streamlit_style = """
     <style>
@@ -118,7 +121,6 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     output_path = os.path.join(os.getcwd(), f"Cartel_{ciudad}_{'_'.join(idiomas)}.docx")
     doc.save(output_path)
     return output_path
-st.title("Generador de Carteles - Guías")
 
 idiomas_disponibles = ["Español", "Portugués", "Inglés"]
 idiomas_seleccionados = st.multiselect("Seleccione los idiomas:", idiomas_disponibles, default=["Español"])

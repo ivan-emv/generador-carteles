@@ -22,7 +22,8 @@ def generar_cartel(ciudad, fecha, actividad, hora_encuentro, punto_encuentro, de
     doc_path = "EJEMPLO CARTEL EMV.docx"
     if not os.path.exists(doc_path):
         return "Error: No se encuentra el archivo base. Asegúrate de que 'EJEMPLO CARTEL EMV.docx' está en el directorio."
-    
+st.image("a1.png", width=300)
+
     doc = Document(doc_path)
     
     fecha_formateada = obtener_dia_semana(fecha, idiomas)
